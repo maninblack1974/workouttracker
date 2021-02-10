@@ -1,10 +1,9 @@
-const router = require("express").Router();
-const Workout = require("../models/workout.js");
+const db = require("../models");
 
 module.exports = function(app) {
 
-    router.get("/api/workouts", (req, res) => {
-        Workout.find({})
+    app.get("/api/workouts", (req, res) => {
+        db.Workout.find({})
         .then(workout => {
             res.json(workout);
         })
@@ -13,9 +12,9 @@ module.exports = function(app) {
         });
     });
     
-    router.post("/api/workouts", async (req, res)=> {
+    app.post("/api/workouts", async (req, res)=> {
         try{
-            const response = await Workout.create({type: "workout"})
+            const response = await db.Workout.create({type: "workout"})
             res.json(response);
         }
         catch(err){
@@ -23,11 +22,11 @@ module.exports = function(app) {
         }
     })
 
-    router.put("/api/workouts/:id", ({body, params}, res) => {
+    app.put("/api/workouts/:id", ({body, params}, res) => {
         const workoutId = params.id;
         let savedExercises = [];
 
-        Workout.find({_id: workoutId})
+        db.Workout.find({_id: workoutId})
             .then(dbWorkout => {
                 savedExercises = dbWorkout[0].exercises;
                 res.json(dbWorkout[0].exercises);
@@ -40,7 +39,7 @@ module.exports = function(app) {
             });
 
         function updateWorkout(exercises){
-            Workout.findByIdAndUpdate(workoutId, {exercises: exercises}, function(err, doc){
+            db.Workout.findByIdAndUpdate(workoutId, {exercises: exercises}, function(err, doc){
             if(err){
                 console.log(err)
             }
@@ -50,8 +49,8 @@ module.exports = function(app) {
             
     })
 
-    router.get("/api/workouts/range", (req, res) => {
-        Workout.find({})
+    app.get("/api/workouts/range", (req, res) => {
+        db.Workout.find({})
         .then(workout => {
             res.json(workout);
         })
